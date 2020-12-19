@@ -40,7 +40,10 @@ int main()
     SetCameraMode(camera, CAMERA_ORBITAL);
 
     Vector3 cubePosition = { 0.0f };
-
+    int oldKey = 0;
+    int pressedKey = 0;
+    float fovChangePerSecond = 5;
+    float frameTime = 0;
     SetTargetFPS(60);               // Set our game to run at 60 frames-per-second
     //--------------------------------------------------------------------------------------
 
@@ -57,6 +60,17 @@ int main()
         BeginDrawing();
 
             ClearBackground(RAYWHITE);
+        
+            // Update
+            //----------------------------------------------------------------------------------
+            frameTime = GetFrameTime();
+            if (IsKeyDown(KEY_RIGHT)) camera.fovy += frameTime * fovChangePerSecond;
+            if (IsKeyDown(KEY_LEFT)) camera.fovy -= frameTime * fovChangePerSecond;
+            pressedKey = GetKeyPressed();
+            if (pressedKey != oldKey && pressedKey != 0) oldKey = pressedKey;
+            //if (IsKeyDown(KEY_UP)) ballPosition.y -= 2.0f;
+            //if (IsKeyDown(KEY_DOWN)) ballPosition.y += 2.0f;
+            //-----------------------------------------------
 
             BeginMode3D(camera);
 
@@ -67,6 +81,9 @@ int main()
             EndMode3D();
 
             DrawText("This is a raylib example", 10, 40, 20, DARKGRAY);
+            DrawText(TextFormat("FOV: %f", camera.fovy), 10, 60, 20, DARKGRAY);
+            DrawText(TextFormat("Last key: %d", oldKey), 10, 80, 20, DARKGRAY);
+
 
             DrawFPS(10, 10);
 
