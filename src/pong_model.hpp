@@ -1,5 +1,6 @@
 #ifndef __GAME_MODEL_PONG
 #define __GAME_MODEL_PONG
+#include "raylib.h"
 namespace pong {
     class GameWorld {
         public:
@@ -7,35 +8,52 @@ namespace pong {
         GameWorld(int horizontalWidth, int verticalHeight) : width(horizontalWidth), height(verticalHeight) {}
     };
 
-    class GameObject {
+    class DrawableObject {
         public:
-        virtual void drawObject() = delete;
-        virtual ~GameObject() {}
+        virtual void drawObject() = 0;
+        virtual ~DrawableObject() {}
     };
 
-    class Paddle {
+    class GeometryColours {
+        public:
+        Color lineColour;
+        Color fillColour;
+
+        GeometryColours(Color line, Color fill) : lineColour(line), fillColour(fill) {}
+    };
+
+    class Paddle: public DrawableObject, public GeometryColours {
         public:
         double xpos, ypos;
-        double width, length;
+        double width, height;
         double speed;
         
-        Paddle(double x, double y, double w, double l, double s) : xpos(x), ypos(y), width(w), length(l), speed(s) {}
+        Paddle(double x, double y, double w, double h, double s) : 
+            GeometryColours(Color{255,0,0,255}, Color{255,255,0,255}), 
+            xpos(x), ypos(y), width(w), height(h), speed(s) {}
         Paddle() : Paddle(0, 0, 0, 0, 0) {}
+
+        virtual void drawObject();
     };
 
-    class Ball {
+    class Ball: public DrawableObject, public GeometryColours {
         public:
         double xpos, ypos;
         double radius;
         double speed;
         double direction;
 
-        Ball(double x, double y, double r, double s, double d) : xpos(x), ypos(y), radius(r), speed(s), direction(d) {}
+        Ball(double x, double y, double r, double s, double d) :
+            GeometryColours(Color{0,0,230,255}, Color{60,60,60,255}),
+            xpos(x), ypos(y), radius(r), speed(s), direction(d) {}
         Ball() : Ball(0, 0, 0, 0, 0) {}
+
+        virtual void drawObject();
     };
 
-    class PongModel {
+    class PongModel: public DrawableObject {
         public:
+        GameWorld* worldInfo;
         Paddle P1Paddle, P2Paddle;
         Ball PongBall;
         int topBottomWallThickness;
@@ -43,8 +61,10 @@ namespace pong {
         double MaxPaddleYPosition, MinPaddleYPosition;
 
         PongModel() {}
-        PongModel(GameWorld& gw);
+        PongModel(GameWorld* gw);
         ~PongModel() {}
+
+        virtual void drawObject();
     };
 }
 #endif

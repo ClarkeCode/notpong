@@ -54,6 +54,7 @@ void drawGameState(Camera2D& camera, pong::PongModel& model) {
 
                 //DrawCube(cubePosition, 2.0f, 2.0f, 2.0f, RED);
                 //DrawCubeWires(cubePosition, 2.0f, 2.0f, 2.0f, MAROON);
+                model.drawObject();
                 DrawGrid(10, 1.0f);
 
             EndMode2D();
@@ -76,7 +77,7 @@ int main(int argc, char* argv[]) {
     std::cout << "Screen " << GetMonitorWidth(0) << ", " << GetMonitorHeight(0) << "\n";
 
     Camera2D camera = setupCamera(gameWorld);
-    pong::PongModel gameModel(gameWorld);
+    pong::PongModel gameModel(&gameWorld);
     
     SetTargetFPS(60); // Set game to run at 60 frames-per-second
     //--------------------------------------------------------------------------------------
