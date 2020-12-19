@@ -24,16 +24,17 @@ namespace pong {
 
     class Paddle: public DrawableObject, public GeometryColours {
         public:
-        double xpos, ypos;
-        double width, height;
-        double speed;
+        float xpos, ypos;
+        float width, height;
+        float speed;
         
-        Paddle(double x, double y, double w, double h, double s) : 
+        Paddle(float x, float y, float w, float h, float s) : 
             GeometryColours(Color{255,0,0,255}, Color{255,255,0,255}), 
             xpos(x), ypos(y), width(w), height(h), speed(s) {}
         Paddle() : Paddle(0, 0, 0, 0, 0) {}
 
         virtual void drawObject();
+        void updatePaddle(float verticalDelta, float maxYPos, float minYPos);
     };
 
     class Ball: public DrawableObject, public GeometryColours {

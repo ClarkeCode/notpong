@@ -33,16 +33,20 @@ Camera2D setupCamera(pong::GameWorld& gw) {
 }
 
 void updateGameState(pong::PongModel& model) {
-    //float frameTime = GetFrameTime();
-    // Update
-    //----------------------------------------------------------------------------------
-    //if (IsKeyDown(KEY_RIGHT)) camera.fovy += frameTime * fovChangePerSecond;
-    //if (IsKeyDown(KEY_LEFT)) camera.fovy -= frameTime * fovChangePerSecond;
-    //pressedKey = GetKeyPressed();
-    //if (pressedKey != oldKey && pressedKey != 0) oldKey = pressedKey;
-    //if (IsKeyDown(KEY_UP)) ballPosition.y -= 2.0f;
-    //if (IsKeyDown(KEY_DOWN)) ballPosition.y += 2.0f;
-    //-----------------------------------------------
+    float frameTime = GetFrameTime();
+    
+    //P1 controls
+    if (IsKeyDown(KEY_W))
+        model.P1Paddle.updatePaddle(frameTime * model.P1Paddle.speed * -1, model.worldInfo->height-model.topBottomWallThickness, model.topBottomWallThickness);
+    if (IsKeyDown(KEY_S))
+        model.P1Paddle.updatePaddle(frameTime * model.P1Paddle.speed, model.worldInfo->height-model.topBottomWallThickness, model.topBottomWallThickness);
+
+    //P2 controls
+    if (IsKeyDown(KEY_UP))
+        model.P2Paddle.updatePaddle(frameTime * model.P2Paddle.speed * -1, model.worldInfo->height-model.topBottomWallThickness, model.topBottomWallThickness);
+    if (IsKeyDown(KEY_DOWN))
+        model.P2Paddle.updatePaddle(frameTime * model.P2Paddle.speed, model.worldInfo->height-model.topBottomWallThickness, model.topBottomWallThickness);
+
 }
 
 void drawGameState(Camera2D& camera, pong::PongModel& model) {

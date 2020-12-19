@@ -8,6 +8,20 @@ void pong::Paddle::drawObject() {
     DrawRectangleLinesEx(Rectangle{(float)rectCornerX, (float)rectCornerY, (float)width, (float)height}, 1, lineColour);
 }
 
+void pong::Paddle::updatePaddle(float verticalDelta, float maxYPos, float minYPos) {
+    float modifiedMinYPos = minYPos + height/2.0;
+    float modifiedMaxYPos = maxYPos - height/2.0;
+    
+    //Move the paddle vertically
+    ypos += verticalDelta;
+
+    //Ensure paddle doesn't leave boundaries
+    if (ypos < modifiedMinYPos)
+        ypos = modifiedMinYPos;
+    if (ypos > modifiedMaxYPos)
+        ypos = modifiedMaxYPos;
+}
+
 void pong::Ball::drawObject() {
     DrawCircle(xpos, ypos, radius, fillColour);
     DrawCircleLines(xpos, ypos, radius, lineColour);
@@ -21,7 +35,7 @@ pong::PongModel::PongModel(GameWorld* gw) {
     
     paddleWidth = 20;
     paddleHeight = 60;
-    paddleSpeed = 10;
+    paddleSpeed = 70;
     P1Paddle = Paddle(0 + paddleWidth/2.0, gw->height/2.0, paddleWidth, paddleHeight, paddleSpeed);
     P2Paddle = Paddle(gw->width - paddleWidth/2.0, gw->height/2.0, paddleWidth, paddleHeight, paddleSpeed);
 
