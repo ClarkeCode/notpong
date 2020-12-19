@@ -1,6 +1,12 @@
 #ifndef __GAME_MODEL_PONG
 #define __GAME_MODEL_PONG
 namespace pong {
+    class GameWorld {
+        public:
+        int width, height;
+        GameWorld(int horizontalWidth, int verticalHeight) : width(horizontalWidth), height(verticalHeight) {}
+    };
+
     class Paddle {
         double xpos, ypos;
         double width;
@@ -29,6 +35,7 @@ namespace pong {
 
         public:
         PongModel() {}
+        PongModel(GameWorld& gw);
         ~PongModel() {}
     };
 }

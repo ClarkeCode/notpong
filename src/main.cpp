@@ -20,75 +20,72 @@
 ********************************************************************************************/
 
 #include "raylib.h"
+#include "pong_model.hpp"
+#include <iostream>
 
-int main() 
-{
-    // Initialization
-    //--------------------------------------------------------------------------------------
-    const int screenWidth = 800;
-    const int screenHeight = 450;
+Camera2D setupCamera(pong::GameWorld& gw) {
+    Camera2D camera {0};
+    camera.target = Vector2{ (float)gw.width/2, (float)gw.height/2 };
+    camera.offset = Vector2{ (float)gw.width/2, (float)gw.height/2 };
+    camera.rotation = 0.0f;
+    camera.zoom = 1.0f;
+    return camera;
+}
 
-    InitWindow(screenWidth, screenHeight, "raylib");
+void updateGameState(pong::PongModel& model) {
+    //float frameTime = GetFrameTime();
+    // Update
+    //----------------------------------------------------------------------------------
+    //if (IsKeyDown(KEY_RIGHT)) camera.fovy += frameTime * fovChangePerSecond;
+    //if (IsKeyDown(KEY_LEFT)) camera.fovy -= frameTime * fovChangePerSecond;
+    //pressedKey = GetKeyPressed();
+    //if (pressedKey != oldKey && pressedKey != 0) oldKey = pressedKey;
+    //if (IsKeyDown(KEY_UP)) ballPosition.y -= 2.0f;
+    //if (IsKeyDown(KEY_DOWN)) ballPosition.y += 2.0f;
+    //-----------------------------------------------
+}
 
-    Camera camera = { 0 };
-    camera.position = (Vector3){ 10.0f, 10.0f, 8.0f };
-    camera.target = (Vector3){ 0.0f, 0.0f, 0.0f };
-    camera.up = (Vector3){ 0.0f, 1.0f, 0.0f };
-    camera.fovy = 60.0f;
-    camera.type = CAMERA_PERSPECTIVE;
-    
-    SetCameraMode(camera, CAMERA_ORBITAL);
-
-    Vector3 cubePosition = { 0.0f };
-    int oldKey = 0;
-    int pressedKey = 0;
-    float fovChangePerSecond = 5;
-    float frameTime = 0;
-    SetTargetFPS(60);               // Set our game to run at 60 frames-per-second
-    //--------------------------------------------------------------------------------------
-
-    // Main game loop
-    while (!WindowShouldClose())    // Detect window close button or ESC key
-    {
-        // Update
-        //----------------------------------------------------------------------------------
-        UpdateCamera(&camera);
-        //----------------------------------------------------------------------------------
-
+void drawGameState(Camera2D& camera, pong::PongModel& model) {
         // Draw
         //----------------------------------------------------------------------------------
         BeginDrawing();
-
             ClearBackground(RAYWHITE);
-        
-            // Update
-            //----------------------------------------------------------------------------------
-            frameTime = GetFrameTime();
-            if (IsKeyDown(KEY_RIGHT)) camera.fovy += frameTime * fovChangePerSecond;
-            if (IsKeyDown(KEY_LEFT)) camera.fovy -= frameTime * fovChangePerSecond;
-            pressedKey = GetKeyPressed();
-            if (pressedKey != oldKey && pressedKey != 0) oldKey = pressedKey;
-            //if (IsKeyDown(KEY_UP)) ballPosition.y -= 2.0f;
-            //if (IsKeyDown(KEY_DOWN)) ballPosition.y += 2.0f;
-            //-----------------------------------------------
+            BeginMode2D(camera);
 
-            BeginMode3D(camera);
-
-                DrawCube(cubePosition, 2.0f, 2.0f, 2.0f, RED);
-                DrawCubeWires(cubePosition, 2.0f, 2.0f, 2.0f, MAROON);
+                //DrawCube(cubePosition, 2.0f, 2.0f, 2.0f, RED);
+                //DrawCubeWires(cubePosition, 2.0f, 2.0f, 2.0f, MAROON);
                 DrawGrid(10, 1.0f);
 
-            EndMode3D();
+            EndMode2D();
 
             DrawText("This is a raylib example", 10, 40, 20, DARKGRAY);
-            DrawText(TextFormat("FOV: %f", camera.fovy), 10, 60, 20, DARKGRAY);
-            DrawText(TextFormat("Last key: %d", oldKey), 10, 80, 20, DARKGRAY);
-
-
+            //DrawText(TextFormat("FOV: %f", camera.fovy), 10, 60, 20, DARKGRAY);
+            //DrawText(TextFormat("Last key: %d", oldKey), 10, 80, 20, DARKGRAY);
             DrawFPS(10, 10);
 
         EndDrawing();
         //----------------------------------------------------------------------------------
+}
+
+int main(int argc, char* argv[]) {
+    // Initialization
+    //--------------------------------------------------------------------------------------
+    pong::GameWorld gameWorld(800, 450);
+
+    InitWindow(gameWorld.width, gameWorld.height, "NotPong");
+    std::cout << "Screen " << GetMonitorWidth(0) << ", " << GetMonitorHeight(0) << "\n";
+
+    Camera2D camera = setupCamera(gameWorld);
+    pong::PongModel gameModel(gameWorld);
+    
+    SetTargetFPS(60); // Set game to run at 60 frames-per-second
+    //--------------------------------------------------------------------------------------
+
+    // Main game loop
+    while (!WindowShouldClose()) { // Detect window close button or ESC key
+        updateGameState(gameModel);
+
+        drawGameState(camera, gameModel);
     }
 
     // De-Initialization
