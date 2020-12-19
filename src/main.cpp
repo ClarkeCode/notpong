@@ -47,6 +47,7 @@ void updateGameState(pong::PongModel& model) {
     if (IsKeyDown(KEY_DOWN))
         model.P2Paddle.updatePaddle(frameTime * model.P2Paddle.speed, model.worldInfo->height-model.topBottomWallThickness, model.topBottomWallThickness);
 
+    model.PongBall.updateBall(frameTime, model);
 }
 
 void drawGameState(Camera2D& camera, pong::PongModel& model) {

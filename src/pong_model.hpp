@@ -22,6 +22,8 @@ namespace pong {
         GeometryColours(Color line, Color fill) : lineColour(line), fillColour(fill) {}
     };
 
+    class PongModel;
+
     class Paddle: public DrawableObject, public GeometryColours {
         public:
         float xpos, ypos;
@@ -35,21 +37,23 @@ namespace pong {
 
         virtual void drawObject();
         void updatePaddle(float verticalDelta, float maxYPos, float minYPos);
+        Rectangle getCollisionBox();
     };
 
     class Ball: public DrawableObject, public GeometryColours {
         public:
-        double xpos, ypos;
-        double radius;
-        double speed;
-        double direction;
+        Vector2 xyPosition;
+        float radius;
+        float speed;
+        float direction;
 
-        Ball(double x, double y, double r, double s, double d) :
+        Ball(float x, float y, float r, float s, float d) :
             GeometryColours(Color{0,0,230,255}, Color{60,60,60,255}),
-            xpos(x), ypos(y), radius(r), speed(s), direction(d) {}
+            xyPosition(Vector2{x,y}), radius(r), speed(s), direction(d) {}
         Ball() : Ball(0, 0, 0, 0, 0) {}
 
         virtual void drawObject();
+        void updateBall(float frameTime, PongModel& gameModel);
     };
 
     class PongModel: public DrawableObject {
@@ -58,8 +62,8 @@ namespace pong {
         Paddle P1Paddle, P2Paddle;
         Ball PongBall;
         int topBottomWallThickness;
-        double paddleWidth, paddleHeight, paddleSpeed;
-        double MaxPaddleYPosition, MinPaddleYPosition;
+        float paddleWidth, paddleHeight, paddleSpeed;
+        float MaxPaddleYPosition, MinPaddleYPosition;
 
         PongModel() {}
         PongModel(GameWorld* gw);
