@@ -40,6 +40,9 @@ pong::PongModel::PongModel(concept::GameWorld* gw) {
     P1Paddle = Paddle(0 + paddleWidth/2.0, gw->height/2.0, paddleWidth, paddleHeight, paddleSpeed);
     P2Paddle = Paddle(gw->width - paddleWidth/2.0, gw->height/2.0, paddleWidth, paddleHeight, paddleSpeed);
 
+    TopWall = Wall(Rectangle{0, 0, gw->width, (float)topBottomWallThickness});
+    BottomWall = Wall(Rectangle{0, gw->height-topBottomWallThickness, gw->width, (float)topBottomWallThickness});
+
     PongBall.xyPosition.x = gw->width/2.0;
     PongBall.xyPosition.y = gw->height/2.0;
     PongBall.radius = 10;
@@ -48,15 +51,9 @@ pong::PongModel::PongModel(concept::GameWorld* gw) {
 }
 
 void pong::PongModel::drawObject() {
-    //Top Wall
-    DrawRectangleRec(Rectangle{0, 0, (float)worldInfo->width, (float)topBottomWallThickness}, GRAY);
-    DrawRectangleLinesEx(Rectangle{0, 0, (float)worldInfo->width, (float)topBottomWallThickness}, 1, DARKGRAY);
-
-    //Bottom Wall
-    DrawRectangleRec(Rectangle{0, (float)(worldInfo->height - topBottomWallThickness), (float)worldInfo->width, (float)topBottomWallThickness}, GRAY);
-    DrawRectangleLinesEx(Rectangle{0, (float)(worldInfo->height - topBottomWallThickness), (float)worldInfo->width, (float)topBottomWallThickness}, 1, DARKGRAY);
-
     P1Paddle.drawObject();
     P2Paddle.drawObject();
+    TopWall.drawObject();
+    BottomWall.drawObject();
     PongBall.drawObject();
 }

@@ -37,15 +37,15 @@ void updateGameState(pong::PongModel& model) {
     
     //P1 controls
     if (IsKeyDown(KEY_W))
-        model.P1Paddle.updatePaddle(frameTime * model.P1Paddle.speed * -1, model.worldInfo->height-model.topBottomWallThickness, model.topBottomWallThickness);
+        model.P1Paddle.updatePaddle(frameTime * model.P1Paddle.speed * -1, model.BottomWall.getCollisionBox().y, model.TopWall.getCollisionBox().height);
     if (IsKeyDown(KEY_S))
-        model.P1Paddle.updatePaddle(frameTime * model.P1Paddle.speed, model.worldInfo->height-model.topBottomWallThickness, model.topBottomWallThickness);
+        model.P1Paddle.updatePaddle(frameTime * model.P1Paddle.speed, model.BottomWall.getCollisionBox().y, model.TopWall.getCollisionBox().height);
 
     //P2 controls
     if (IsKeyDown(KEY_UP))
-        model.P2Paddle.updatePaddle(frameTime * model.P2Paddle.speed * -1, model.worldInfo->height-model.topBottomWallThickness, model.topBottomWallThickness);
+        model.P2Paddle.updatePaddle(frameTime * model.P2Paddle.speed * -1, model.BottomWall.getCollisionBox().y, model.TopWall.getCollisionBox().height);
     if (IsKeyDown(KEY_DOWN))
-        model.P2Paddle.updatePaddle(frameTime * model.P2Paddle.speed, model.worldInfo->height-model.topBottomWallThickness, model.topBottomWallThickness);
+        model.P2Paddle.updatePaddle(frameTime * model.P2Paddle.speed, model.BottomWall.getCollisionBox().y, model.TopWall.getCollisionBox().height);
     
     //Start ball movement
     if (IsKeyDown(KEY_R))

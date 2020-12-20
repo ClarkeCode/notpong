@@ -5,8 +5,8 @@
 namespace concept {
     class GameWorld {
         public:
-        int width, height;
-        GameWorld(int horizontalWidth, int verticalHeight) : width(horizontalWidth), height(verticalHeight) {}
+        float width, height;
+        GameWorld(float horizontalWidth, float verticalHeight) : width(horizontalWidth), height(verticalHeight) {}
     };
 
     class DrawableObject {

@@ -6,6 +6,19 @@
 namespace pong {
     class PongModel;
 
+    class Wall: public concept::DrawableObject, public concept::GeometryColours, public concept::CollidableRectangle {
+        Rectangle rect;
+        public:
+        Wall(Rectangle rect) : concept::GeometryColours(GRAY, DARKGRAY), rect(rect) {}
+        Wall() : Wall(Rectangle{0,0,0,0}) {}
+        
+        virtual void drawObject() {
+            DrawRectangleRec(rect, GRAY);
+            DrawRectangleLinesEx(rect, 1, DARKGRAY);
+        }
+        virtual Rectangle getCollisionBox() { return rect; }
+    };
+
     class Paddle: public concept::DrawableObject, public concept::GeometryColours, public concept::CollidableRectangle {
         public:
         float xpos, ypos;
@@ -41,6 +54,7 @@ namespace pong {
     class PongModel: public concept::DrawableObject {
         public:
         concept::GameWorld* worldInfo;
+        Wall TopWall, BottomWall;
         Paddle P1Paddle, P2Paddle;
         Ball PongBall;
         bool canBallMove;
