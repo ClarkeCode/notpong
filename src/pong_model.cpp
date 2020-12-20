@@ -67,15 +67,24 @@ bool isPointLeftOfXValue(Vector2& xyCoord, float xValue) {
     return xyCoord.x < xValue;
 }
 void pong::Ball::updateBall(float frameTime, PongModel& gameModel) {
+    //If the game has not started, do not move
+    if (!gameModel.canBallMove) {
+        return;
+    }
+
     float remainingMovement = frameTime * speed;
     float xDelta, yDelta;
 
-    xDelta = frameTime * speed * sinf(direction);
-    yDelta = frameTime * speed * cosf(direction);
+    xDelta = remainingMovement * sinf(direction);
+    yDelta = remainingMovement * cosf(direction);
+
+    xyPosition.x += xDelta;
+    xyPosition.y += yDelta;
 }
 
 pong::PongModel::PongModel(GameWorld* gw) {
     worldInfo = gw;
+    canBallMove = false;
     topBottomWallThickness = 10;
     MaxPaddleYPosition = 0 + topBottomWallThickness;
     MinPaddleYPosition = gw->height - topBottomWallThickness;
@@ -90,7 +99,7 @@ pong::PongModel::PongModel(GameWorld* gw) {
     PongBall.xyPosition.y = gw->height/2.0;
     PongBall.radius = 10;
     PongBall.speed = 50;
-    PongBall.direction = PI/2.5;
+    PongBall.direction = PI/4;
 }
 
 void pong::PongModel::drawObject() {
