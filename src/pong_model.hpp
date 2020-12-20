@@ -1,5 +1,5 @@
-#ifndef __GAME_MODEL_PONG
-#define __GAME_MODEL_PONG
+#ifndef GAME_MODEL_PONG
+#define GAME_MODEL_PONG
 #include "raylib.h"
 namespace pong {
     class GameWorld {
