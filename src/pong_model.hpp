@@ -14,6 +14,12 @@ namespace pong {
         virtual ~DrawableObject() {}
     };
 
+    class CollidableRectangle {
+        public:
+        virtual Rectangle getCollisionBox() = 0;
+        virtual ~CollidableRectangle() {}
+    };
+
     class GeometryColours {
         public:
         Color lineColour;
@@ -24,7 +30,7 @@ namespace pong {
 
     class PongModel;
 
-    class Paddle: public DrawableObject, public GeometryColours {
+    class Paddle: public DrawableObject, public GeometryColours, public CollidableRectangle {
         public:
         float xpos, ypos;
         float width, height;
@@ -37,7 +43,7 @@ namespace pong {
 
         virtual void drawObject();
         void updatePaddle(float verticalDelta, float maxYPos, float minYPos);
-        Rectangle getCollisionBox();
+        virtual Rectangle getCollisionBox();
     };
 
     class Ball: public DrawableObject, public GeometryColours {
