@@ -1,36 +1,12 @@
 #ifndef GAME_MODEL_PONG
 #define GAME_MODEL_PONG
 #include "raylib.h"
+#include "game_concepts.hpp"
+
 namespace pong {
-    class GameWorld {
-        public:
-        int width, height;
-        GameWorld(int horizontalWidth, int verticalHeight) : width(horizontalWidth), height(verticalHeight) {}
-    };
-
-    class DrawableObject {
-        public:
-        virtual void drawObject() = 0;
-        virtual ~DrawableObject() {}
-    };
-
-    class CollidableRectangle {
-        public:
-        virtual Rectangle getCollisionBox() = 0;
-        virtual ~CollidableRectangle() {}
-    };
-
-    class GeometryColours {
-        public:
-        Color lineColour;
-        Color fillColour;
-
-        GeometryColours(Color line, Color fill) : lineColour(line), fillColour(fill) {}
-    };
-
     class PongModel;
 
-    class Paddle: public DrawableObject, public GeometryColours, public CollidableRectangle {
+    class Paddle: public concept::DrawableObject, public concept::GeometryColours, public concept::CollidableRectangle {
         public:
         float xpos, ypos;
         float width, height;
@@ -46,7 +22,7 @@ namespace pong {
         virtual Rectangle getCollisionBox();
     };
 
-    class Ball: public DrawableObject, public GeometryColours {
+    class Ball: public concept::DrawableObject, public concept::GeometryColours {
         public:
         Vector2 xyPosition;
         float radius;
@@ -62,9 +38,9 @@ namespace pong {
         void updateBall(float frameTime, PongModel& gameModel);
     };
 
-    class PongModel: public DrawableObject {
+    class PongModel: public concept::DrawableObject {
         public:
-        GameWorld* worldInfo;
+        concept::GameWorld* worldInfo;
         Paddle P1Paddle, P2Paddle;
         Ball PongBall;
         bool canBallMove;
@@ -73,7 +49,7 @@ namespace pong {
         float MaxPaddleYPosition, MinPaddleYPosition;
 
         PongModel() {}
-        PongModel(GameWorld* gw);
+        PongModel(concept::GameWorld* gw);
         ~PongModel() {}
 
         virtual void drawObject();

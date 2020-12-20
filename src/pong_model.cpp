@@ -91,7 +91,7 @@ void pong::Ball::updateBall(float frameTime, PongModel& gameModel) {
         if (isPointWithinYValues(checkPoint, P2PaddleCollision)) {
             float usedMovement = Vector2Distance(xyPosition, checkPoint);
             remainingMovement -= usedMovement;
-            
+
         }
         
     }
@@ -102,7 +102,7 @@ void pong::Ball::updateBall(float frameTime, PongModel& gameModel) {
     xyPosition.y += yDelta;
 }
 
-pong::PongModel::PongModel(GameWorld* gw) {
+pong::PongModel::PongModel(concept::GameWorld* gw) {
     worldInfo = gw;
     canBallMove = false;
     topBottomWallThickness = 10;

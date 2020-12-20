@@ -23,7 +23,7 @@
 #include "pong_model.hpp"
 #include <iostream>
 
-Camera2D setupCamera(pong::GameWorld& gw) {
+Camera2D setupCamera(concept::GameWorld& gw) {
     Camera2D camera {0};
     camera.target = Vector2{ (float)gw.width/2, (float)gw.height/2 };
     camera.offset = Vector2{ (float)gw.width/2, (float)gw.height/2 };
@@ -80,7 +80,7 @@ void drawGameState(Camera2D& camera, pong::PongModel& model) {
 int main(int argc, char* argv[]) {
     // Initialization
     //--------------------------------------------------------------------------------------
-    pong::GameWorld gameWorld(800, 450);
+    concept::GameWorld gameWorld(800, 450);
 
     InitWindow(gameWorld.width, gameWorld.height, "NotPong");
     std::cout << "Screen " << GetMonitorWidth(0) << ", " << GetMonitorHeight(0) << "\n";
