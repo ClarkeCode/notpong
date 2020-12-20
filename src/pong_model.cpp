@@ -54,44 +54,24 @@ float flipAngleHorizontalCollision(float angle) {
         return 2*PI - angle;
 }
 
+bool isPointWithinYValues(Vector2& xyCoord, Vector2& yMinMaxValues) {
+    return xyCoord.y >= yMinMaxValues.x && xyCoord.y <= yMinMaxValues.y;
+}
+bool isPointWithinXValues(Vector2& xyCoord, Vector2& xMinMaxValues) {
+    return xyCoord.x >= xMinMaxValues.x && xyCoord.x <= xMinMaxValues.y;
+}
+bool isPointBelowYValue(Vector2& xyCoord, float yValue) {
+    return xyCoord.y > yValue; //Larger Y-values are lower in screen-space
+}
+bool isPointLeftOfXValue(Vector2& xyCoord, float xValue) {
+    return xyCoord.x < xValue;
+}
 void pong::Ball::updateBall(float frameTime, PongModel& gameModel) {
-    
-    //Calculate movement of the ball via a raymarching technique
     float remainingMovement = frameTime * speed;
-    float raymarchResolution = 0.1f;
     float xDelta, yDelta;
-    
-    while (remainingMovement > 0) {
-        xDelta = raymarchResolution * frameTime * speed * sinf(direction);
-        yDelta = raymarchResolution * frameTime * speed * cosf(direction);
 
-        //Bouncing off paddles
-        if (CheckCollisionCircleRec(xyPosition, radius, gameModel.P1Paddle.getCollisionBox()) ||
-            CheckCollisionCircleRec(xyPosition, radius, gameModel.P2Paddle.getCollisionBox())) {
-            direction = flipAngleVerticalCollision(direction);
-            xDelta = raymarchResolution * frameTime * speed * sinf(direction);
-            yDelta = raymarchResolution * frameTime * speed * cosf(direction);
-            xyPosition.x += xDelta;
-            xyPosition.y += yDelta;
-            continue;
-        }
-
-        //Bouncing off walls
-        if (CheckCollisionCircleRec(xyPosition, radius, Rectangle{0, 0, (float)gameModel.worldInfo->width, (float)gameModel.topBottomWallThickness}) ||
-            CheckCollisionCircleRec(xyPosition, radius, Rectangle{0, (float)gameModel.worldInfo->height - gameModel.topBottomWallThickness, (float)gameModel.worldInfo->width, (float)gameModel.topBottomWallThickness})) {
-            direction = flipAngleHorizontalCollision(direction);
-            xDelta = raymarchResolution * frameTime * speed * sinf(direction);
-            yDelta = raymarchResolution * frameTime * speed * cosf(direction);
-            xyPosition.x += xDelta;
-            xyPosition.y += yDelta;
-            continue;
-        }
-
-        //Commiting changes
-        xyPosition.x += xDelta;
-        xyPosition.y += yDelta;
-        remainingMovement -= raymarchResolution;
-    }
+    xDelta = frameTime * speed * sinf(direction);
+    yDelta = frameTime * speed * cosf(direction);
 }
 
 pong::PongModel::PongModel(GameWorld* gw) {

@@ -86,7 +86,9 @@ int main(int argc, char* argv[]) {
     
     SetTargetFPS(60); // Set game to run at 60 frames-per-second
     //--------------------------------------------------------------------------------------
-
+    while (!IsWindowReady()) {
+        continue;
+    }
     // Main game loop
     while (!WindowShouldClose()) { // Detect window close button or ESC key
         updateGameState(gameModel);
