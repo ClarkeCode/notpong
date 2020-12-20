@@ -54,11 +54,11 @@ float flipAngleHorizontalCollision(float angle) {
         return 2*PI - angle;
 }
 
-bool isPointWithinYValues(Vector2& xyCoord, Vector2& yMinMaxValues) {
-    return xyCoord.y >= yMinMaxValues.x && xyCoord.y <= yMinMaxValues.y;
+bool isPointWithinYValues(Vector2& xyCoord, Rectangle& rect) {
+    return xyCoord.y >= rect.y && xyCoord.y <= rect.y + rect.height;
 }
-bool isPointWithinXValues(Vector2& xyCoord, Vector2& xMinMaxValues) {
-    return xyCoord.x >= xMinMaxValues.x && xyCoord.x <= xMinMaxValues.y;
+bool isPointWithinXValues(Vector2& xyCoord, Rectangle& rect) {
+    return xyCoord.x >= rect.x && xyCoord.x <= rect.x + rect.width;
 }
 bool isPointBelowYValue(Vector2& xyCoord, float yValue) {
     return xyCoord.y > yValue; //Larger Y-values are lower in screen-space
@@ -72,11 +72,31 @@ void pong::Ball::updateBall(float frameTime, PongModel& gameModel) {
         return;
     }
 
+    Rectangle P2PaddleCollision = gameModel.P2Paddle.getCollisionBox();
+
     float remainingMovement = frameTime * speed;
     float xDelta, yDelta;
 
     xDelta = remainingMovement * sinf(direction);
     yDelta = remainingMovement * cosf(direction);
+
+    Vector2 targetEndLocation {xyPosition.x + xDelta, xyPosition.y + yDelta};
+    Vector2 checkPoint {0};
+
+    if (xDelta > 0 && targetEndLocation.x > P2PaddleCollision.x - radius) { //Moving horizontally right past the P2 paddle, check collision with P2 paddle
+        checkPoint.x = P2PaddleCollision.x - radius;
+        float yxRatio = abs(yDelta / xDelta);
+        checkPoint.y = xyPosition.y + (checkPoint.x - xyPosition.x) * (yxRatio * yDelta);
+
+        if (isPointWithinYValues(checkPoint, P2PaddleCollision)) {
+            float usedMovement = Vector2Distance(xyPosition, checkPoint);
+            remainingMovement -= usedMovement;
+            
+        }
+        
+    }
+
+
 
     xyPosition.x += xDelta;
     xyPosition.y += yDelta;
