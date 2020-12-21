@@ -2,9 +2,49 @@
 #include "raylib.h"
 #include "raymath.h"
 
+//UTIL
+//========
+// Normalize input value within input range
+RMDEF float Normalize(float value, float start, float end) {
+    return (value - start) / (end - start);
+}
+
+// Remap input value within input range to output range
+RMDEF float Remap(float value, float inputStart, float inputEnd, float outputStart, float outputEnd) {
+    return (value - inputStart) / (inputEnd - inputStart) * (outputEnd - outputStart) + outputStart;
+}
+//========
+
+
+pong::Ball::Ball(float x, float y, float r, float s, float d)  : GeometryColours(Color{0,0,230,255}, Color{60,60,60,255}), xyPosition(Vector2{x,y}), radius(r), speed(s) {
+    setDirection(d);
+}
+
 void pong::Ball::drawObject() {
     DrawCircle(xyPosition.x, xyPosition.y, radius, fillColour);
     DrawCircleLines(xyPosition.x, xyPosition.y, radius, lineColour);
+}
+
+enum RectangleCorner { TOPLEFT, TOPRIGHT, BOTTOMLEFT, BOTTOMRIGHT };
+
+Vector2 getRectangleCoord(Rectangle& rect, RectangleCorner desiredCorner) {
+    if (desiredCorner == TOPLEFT)
+        return Vector2{rect.x, rect.y};
+    else if (desiredCorner == TOPRIGHT)
+        return Vector2{rect.x+rect.width, rect.y};
+    else if (desiredCorner == BOTTOMLEFT)
+        return Vector2{rect.x, rect.y+rect.height};
+    else
+        return Vector2{rect.x+rect.width, rect.y+rect.height};
+}
+
+bool isValueWithinRange(float value, float min, float max) { return value >= min && value <= max; }
+
+Vector2 haltTravelAtXBarrier(Vector2& coord, Vector2& target, float barrier) {
+    return Vector2 {barrier, Remap(target.y, coord.y, target.y, coord.x, barrier)};
+}
+Vector2 haltTravelAtYBarrier(Vector2& coord, Vector2& target, float barrier) {
+    return Vector2 {Remap(target.x, coord.x, target.x, 5,7), barrier};
 }
 
 float flipAngleVerticalCollision(float angle) {
@@ -47,32 +87,33 @@ void pong::Ball::updateBall(float frameTime, PongModel& gameModel) {
         return;
     }
 
-    Rectangle P2PaddleCollision = gameModel.P2Paddle.getCollisionBox();
+    //Rectangle P2PaddleCollision = gameModel.P2Paddle.getCollisionBox();
 
-    float remainingMovement = frameTime * speed;
-    float xDelta, yDelta;
+    //float remainingMovement = frameTime * speed;
 
-    xDelta = remainingMovement * sinf(direction);
-    yDelta = remainingMovement * cosf(direction);
+    // Vector2 targetEndLocation {xyPosition.x + xDelta, xyPosition.y + yDelta};
+    // Vector2 checkPoint {0};
 
-    Vector2 targetEndLocation {xyPosition.x + xDelta, xyPosition.y + yDelta};
-    Vector2 checkPoint {0};
+    // if (xDelta > 0 && targetEndLocation.x > P2PaddleCollision.x - radius) { //Moving horizontally right past the P2 paddle, check collision with P2 paddle
+    //     checkPoint.x = P2PaddleCollision.x - radius;
+    //     float yxRatio = abs(yDelta / xDelta);
+    //     checkPoint.y = xyPosition.y + (checkPoint.x - xyPosition.x) * (yxRatio * yDelta);
 
-    if (xDelta > 0 && targetEndLocation.x > P2PaddleCollision.x - radius) { //Moving horizontally right past the P2 paddle, check collision with P2 paddle
-        checkPoint.x = P2PaddleCollision.x - radius;
-        float yxRatio = abs(yDelta / xDelta);
-        checkPoint.y = xyPosition.y + (checkPoint.x - xyPosition.x) * (yxRatio * yDelta);
+    //     if (isPointWithinYValues(checkPoint, P2PaddleCollision)) {
+    //         float usedMovement = Vector2Distance(xyPosition, checkPoint);
+    //         remainingMovement -= usedMovement;
 
-        if (isPointWithinYValues(checkPoint, P2PaddleCollision)) {
-            float usedMovement = Vector2Distance(xyPosition, checkPoint);
-            remainingMovement -= usedMovement;
-
-        }
+    //     }
         
-    }
+    // }
 
 
 
-    xyPosition.x += xDelta;
-    xyPosition.y += yDelta;
+    xyPosition = Vector2Add(xyPosition, Vector2Scale(directionVect, frameTime*speed));
+}
+
+void pong::Ball::setDirection(Vector2& directionVector) { directionVect = directionVector; }
+void pong::Ball::setDirection(float radianAngle) {
+    directionVect.x = sinf(radianAngle);
+    directionVect.y = cosf(radianAngle);
 }

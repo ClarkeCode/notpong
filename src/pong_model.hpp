@@ -12,11 +12,11 @@ namespace pong {
         Wall(Rectangle rect) : concept::GeometryColours(GRAY, DARKGRAY), rect(rect) {}
         Wall() : Wall(Rectangle{0,0,0,0}) {}
         
-        virtual void drawObject() {
+        virtual inline void drawObject() {
             DrawRectangleRec(rect, GRAY);
             DrawRectangleLinesEx(rect, 1, DARKGRAY);
         }
-        virtual Rectangle getCollisionBox() { return rect; }
+        virtual inline Rectangle getCollisionBox() { return rect; }
     };
 
     class Paddle: public concept::DrawableObject, public concept::GeometryColours, public concept::CollidableRectangle {
@@ -40,12 +40,13 @@ namespace pong {
         Vector2 xyPosition;
         float radius;
         float speed;
-        float direction;
+        Vector2 directionVect;
 
-        Ball(float x, float y, float r, float s, float d) :
-            GeometryColours(Color{0,0,230,255}, Color{60,60,60,255}),
-            xyPosition(Vector2{x,y}), radius(r), speed(s), direction(d) {}
+        Ball(float x, float y, float r, float s, float d);
         Ball() : Ball(0, 0, 0, 0, 0) {}
+
+        void setDirection(Vector2& directionVector);
+        void setDirection(float radianAngle);
 
         virtual void drawObject();
         void updateBall(float frameTime, PongModel& gameModel);

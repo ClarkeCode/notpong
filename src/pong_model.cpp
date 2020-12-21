@@ -43,11 +43,7 @@ pong::PongModel::PongModel(concept::GameWorld* gw) {
     TopWall = Wall(Rectangle{0, 0, gw->width, (float)topBottomWallThickness});
     BottomWall = Wall(Rectangle{0, gw->height-topBottomWallThickness, gw->width, (float)topBottomWallThickness});
 
-    PongBall.xyPosition.x = gw->width/2.0;
-    PongBall.xyPosition.y = gw->height/2.0;
-    PongBall.radius = 10;
-    PongBall.speed = 50;
-    PongBall.direction = PI/4;
+    PongBall = Ball(gw->width/2.0, gw->height/2.0, 10, 80, PI/4);
 }
 
 void pong::PongModel::drawObject() {
