@@ -16,7 +16,7 @@ enum RectangleVertex { TOPLEFT, TOPRIGHT, BOTTOMLEFT, BOTTOMRIGHT };
 Rectangle RectangleExpandByAmount(Rectangle const& rect, float amount) {
     return Rectangle{rect.x-amount, rect.y-amount, rect.width+2*amount, rect.height+2*amount};
 }
-Vector2 RectangleGetVertexCoord(Rectangle const& rect, RectangleVertex desiredVertex) {
+Vector2 RectangleGetVertexCoord(Rectangle const& rect, RectangleVertex const& desiredVertex) {
     if (desiredVertex == TOPLEFT)
         return Vector2{rect.x, rect.y};
     else if (desiredVertex == TOPRIGHT)
@@ -33,6 +33,35 @@ bool isPointWithinYValues(Vector2 const& xyCoord, Rectangle const& rect) {
 }
 bool isPointWithinXValues(Vector2 const& xyCoord, Rectangle const& rect) {
     return xyCoord.x >= rect.x && xyCoord.x <= rect.x + rect.width;
+}
+
+bool willPathCrossRectangleSide(Vector2 const& origin, Vector2 const& target, Rectangle const& rect, RectangleSide const& sideToCheck) {
+    if (sideToCheck == TOP)
+        return isValueWithinRange(rect.y, origin.y, target.y);
+    else if (sideToCheck == BOTTOM)
+        return isValueWithinRange(rect.y + rect.height, target.y, origin.y);
+    else if (sideToCheck == LEFT)
+        return isValueWithinRange(rect.x, origin.x, target.x);
+    else //  sideToCheck == RIGHT
+        return isValueWithinRange(rect.x + rect.width, target.x, origin.x);
+}
+Vector2 locationCrossingRectangleSide(Vector2 const& origin, Vector2 const& target, Rectangle const& rect, RectangleSide const& sideToCheck) {
+    float pathTravelledRatio = 0;
+
+    //Determine the ratio of the path that has been traversed when crossing the specified side
+    {
+        if (sideToCheck == TOP)
+            pathTravelledRatio = (rect.y - origin.y)/(target.y - origin.y);
+        else if (sideToCheck == BOTTOM)
+            pathTravelledRatio = (origin.y - (rect.y + rect.height))/(origin.y - target.y);
+        else if (sideToCheck == LEFT)
+            pathTravelledRatio = (rect.x - origin.x)/(target.x - origin.x);
+        else //  sideToCheck == RIGHT
+            pathTravelledRatio = (origin.x - (rect.x + rect.width))/(origin.x - target.x);
+    }
+
+    Vector2 directionVector = Vector2Subtract(target, origin);
+    return Vector2Add(origin, Vector2Scale(directionVector, pathTravelledRatio));
 }
 
 void pong::Ball::updateBall(float frameTime, PongModel& gameModel) {
@@ -52,18 +81,16 @@ void pong::Ball::updateBall(float frameTime, PongModel& gameModel) {
     float unusedFrametimeRatio = 0;
 
     //Bouncing off paddles
-    if (isValueWithinRange(P1PaddleCollisionZone.x+P1PaddleCollisionZone.width, targetCoord.x, xyPosition.x)) { //Ball will pass by the right side of the paddle
-        unusedFrametimeRatio = (xyPosition.x-(P1PaddleCollisionZone.x+P1PaddleCollisionZone.width))/(xyPosition.x-targetCoord.x);
-        Vector2 candidatePosition = Vector2Add(xyPosition, Vector2Scale(scaledMovementVect, unusedFrametimeRatio));
+    if (willPathCrossRectangleSide(xyPosition, targetCoord, P1PaddleCollisionZone, RIGHT)) { //Ball will pass by the right side of the paddle
+        Vector2 candidatePosition = locationCrossingRectangleSide(xyPosition, targetCoord, P1PaddleCollisionZone, RIGHT);
         if (isPointWithinYValues(candidatePosition, P1PaddleCollisionZone)) { //Ball will be in contact as it goes to the right side of the paddle
             xyPosition = candidatePosition;
             directionVect.x *= -1; //Invert x movement
             updateBall((1-unusedFrametimeRatio)*frameTime, gameModel);
         }
     }
-    else if (isValueWithinRange(P2PaddleCollisionZone.x, xyPosition.x, targetCoord.x)) { //Ball will pass by the left side of the paddle
-        unusedFrametimeRatio = (P2PaddleCollisionZone.x-xyPosition.x)/(targetCoord.x-xyPosition.x);
-        Vector2 candidatePosition = Vector2Add(xyPosition, Vector2Scale(scaledMovementVect, unusedFrametimeRatio));
+    else if (willPathCrossRectangleSide(xyPosition, targetCoord, P2PaddleCollisionZone, LEFT)) { //Ball will pass by the left side of the paddle
+        Vector2 candidatePosition = locationCrossingRectangleSide(xyPosition, targetCoord, P2PaddleCollisionZone, LEFT);
         if (isPointWithinYValues(candidatePosition, P2PaddleCollisionZone)) { //Ball will be in contact as it goes to the left side of the paddle
             xyPosition = candidatePosition;
             directionVect.x *= -1; //Invert x movement
@@ -72,15 +99,13 @@ void pong::Ball::updateBall(float frameTime, PongModel& gameModel) {
     }
 
     //Bouncing off walls
-    if (isValueWithinRange(TopWallCollisionZone.y+TopWallCollisionZone.height, targetCoord.y, xyPosition.y)) {
-        unusedFrametimeRatio = (xyPosition.y-(TopWallCollisionZone.y+TopWallCollisionZone.height))/(xyPosition.y-targetCoord.y);
-        xyPosition = Vector2Add(xyPosition, Vector2Scale(scaledMovementVect, unusedFrametimeRatio));
+    if (willPathCrossRectangleSide(xyPosition, targetCoord, TopWallCollisionZone, BOTTOM)) {
+        xyPosition = locationCrossingRectangleSide(xyPosition, targetCoord, TopWallCollisionZone, BOTTOM);
         directionVect.y *= -1; //Invert y movement
         updateBall((1-unusedFrametimeRatio)*frameTime, gameModel);
     }
-    else if (isValueWithinRange(BottomWallCollisionZone.y, xyPosition.y, targetCoord.y)) { //Will bounce
-        unusedFrametimeRatio = (BottomWallCollisionZone.y-xyPosition.y)/(targetCoord.y-xyPosition.y);
-        xyPosition = Vector2Add(xyPosition, Vector2Scale(scaledMovementVect, unusedFrametimeRatio));
+    else if (willPathCrossRectangleSide(xyPosition, targetCoord, BottomWallCollisionZone, TOP)) { //Will bounce
+        xyPosition = locationCrossingRectangleSide(xyPosition, targetCoord, BottomWallCollisionZone, TOP);
         directionVect.y *= -1; //Invert y movement
         updateBall((1-unusedFrametimeRatio)*frameTime, gameModel);
     }
