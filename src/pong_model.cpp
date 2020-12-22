@@ -23,7 +23,7 @@ void pong::Paddle::updatePaddle(float verticalDelta, float maxYPos, float minYPo
         ypos = modifiedMaxYPos;
 }
 
-Rectangle pong::Paddle::getCollisionBox() {
+Rectangle pong::Paddle::getCollisionBox() const {
     return Rectangle{xpos-width/2.0f, ypos-height/2.0f, width, height};
 }
 

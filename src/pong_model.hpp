@@ -16,7 +16,7 @@ namespace pong {
             DrawRectangleRec(rect, GRAY);
             DrawRectangleLinesEx(rect, 1, DARKGRAY);
         }
-        virtual inline Rectangle getCollisionBox() { return rect; }
+        virtual inline Rectangle getCollisionBox() const { return rect; }
     };
 
     class Paddle: public concept::DrawableObject, public concept::GeometryColours, public concept::CollidableRectangle {
@@ -32,7 +32,7 @@ namespace pong {
 
         virtual void drawObject();
         void updatePaddle(float verticalDelta, float maxYPos, float minYPos);
-        virtual Rectangle getCollisionBox();
+        virtual Rectangle getCollisionBox() const;
     };
 
     class Ball: public concept::DrawableObject, public concept::GeometryColours {

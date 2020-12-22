@@ -17,7 +17,7 @@ namespace concept {
 
     class CollidableRectangle {
         public:
-        virtual Rectangle getCollisionBox() = 0;
+        virtual Rectangle getCollisionBox() const = 0;
         virtual ~CollidableRectangle() {}
     };
 
