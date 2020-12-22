@@ -26,8 +26,10 @@ void pong::Ball::drawObject() {
 }
 
 enum RectangleCorner { TOPLEFT, TOPRIGHT, BOTTOMLEFT, BOTTOMRIGHT };
-
-Vector2 getRectangleCoord(Rectangle& rect, RectangleCorner desiredCorner) {
+Rectangle expandRectangleByAmount(Rectangle const& rect, float amount) {
+    return Rectangle{rect.x-amount, rect.y-amount, rect.width+2*amount, rect.height+2*amount};
+}
+Vector2 getRectangleCoord(Rectangle const& rect, RectangleCorner desiredCorner) {
     if (desiredCorner == TOPLEFT)
         return Vector2{rect.x, rect.y};
     else if (desiredCorner == TOPRIGHT)
@@ -87,29 +89,25 @@ void pong::Ball::updateBall(float frameTime, PongModel& gameModel) {
         return;
     }
 
-    //Rectangle P2PaddleCollision = gameModel.P2Paddle.getCollisionBox();
+    Vector2 scaledMovementVect = Vector2Scale(directionVect, frameTime*speed);
 
-    //float remainingMovement = frameTime * speed;
+    Rectangle P1PaddleCollisionZone = expandRectangleByAmount(gameModel.P1Paddle.getCollisionBox(), radius);
+    Rectangle P2PaddleCollisionZone = expandRectangleByAmount(gameModel.P2Paddle.getCollisionBox(), radius);
+    Rectangle TopWallCollisionZone = expandRectangleByAmount(gameModel.TopWall.getCollisionBox(), radius);
+    Rectangle BottomWallCollisionZone = expandRectangleByAmount(gameModel.BottomWall.getCollisionBox(), radius);
 
-    // Vector2 targetEndLocation {xyPosition.x + xDelta, xyPosition.y + yDelta};
-    // Vector2 checkPoint {0};
+    Vector2 targetCoord = Vector2Add(xyPosition, scaledMovementVect);
+    float unusedFrametimeRatio = 0;
+    if (isValueWithinRange(BottomWallCollisionZone.y, xyPosition.y, targetCoord.y)) { //Will bounce
+        unusedFrametimeRatio = (BottomWallCollisionZone.y-xyPosition.y)/(targetCoord.y-xyPosition.y);
+        xyPosition = Vector2Add(xyPosition, Vector2Scale(scaledMovementVect, unusedFrametimeRatio));
+        directionVect.y *= -1; //Invert y movement
+        updateBall((1-unusedFrametimeRatio)*frameTime, gameModel);
+    }
 
-    // if (xDelta > 0 && targetEndLocation.x > P2PaddleCollision.x - radius) { //Moving horizontally right past the P2 paddle, check collision with P2 paddle
-    //     checkPoint.x = P2PaddleCollision.x - radius;
-    //     float yxRatio = abs(yDelta / xDelta);
-    //     checkPoint.y = xyPosition.y + (checkPoint.x - xyPosition.x) * (yxRatio * yDelta);
-
-    //     if (isPointWithinYValues(checkPoint, P2PaddleCollision)) {
-    //         float usedMovement = Vector2Distance(xyPosition, checkPoint);
-    //         remainingMovement -= usedMovement;
-
-    //     }
-        
-    // }
-
-
-
-    xyPosition = Vector2Add(xyPosition, Vector2Scale(directionVect, frameTime*speed));
+    else {
+        xyPosition = Vector2Add(xyPosition, scaledMovementVect);
+    }
 }
 
 void pong::Ball::setDirection(Vector2& directionVector) { directionVect = directionVector; }
