@@ -36,14 +36,14 @@ pong::PongModel::PongModel(concept::GameWorld* gw) {
     
     paddleWidth = 20;
     paddleHeight = 60;
-    paddleSpeed = 70;
+    paddleSpeed = 120;
     P1Paddle = Paddle(0 + paddleWidth/2.0, gw->height/2.0, paddleWidth, paddleHeight, paddleSpeed);
     P2Paddle = Paddle(gw->width - paddleWidth/2.0, gw->height/2.0, paddleWidth, paddleHeight, paddleSpeed);
 
     TopWall = Wall(Rectangle{0, 0, gw->width, (float)topBottomWallThickness});
     BottomWall = Wall(Rectangle{0, gw->height-topBottomWallThickness, gw->width, (float)topBottomWallThickness});
 
-    PongBall = Ball(gw->width/2.0, gw->height/2.0, 10, 80, PI/4);
+    PongBall = Ball(gw->width/2.0, gw->height/2.0, 10, 150, PI/4);
 }
 
 void pong::PongModel::drawObject() {

@@ -48,8 +48,13 @@ void updateGameState(pong::PongModel& model) {
         model.P2Paddle.updatePaddle(frameTime * model.P2Paddle.speed, model.BottomWall.getCollisionBox().y, model.TopWall.getCollisionBox().height);
     
     //Start ball movement
-    if (IsKeyDown(KEY_R))
+    if (IsKeyPressed(KEY_R)) {
+        if (model.canBallMove) {
+            model.PongBall.xyPosition = Vector2{model.worldInfo->width/2.0f, model.worldInfo->height/2.0f};
+            model.PongBall.setDirection(DEG2RAD * GetRandomValue(0, 360));
+        }
         model.canBallMove = true;
+    }
 
     model.PongBall.updateBall(frameTime, model);
 }
