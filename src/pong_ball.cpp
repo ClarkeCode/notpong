@@ -11,16 +11,17 @@ void pong::Ball::drawObject() {
     DrawCircleLines(xyPosition.x, xyPosition.y, radius, lineColour);
 }
 
-enum RectangleCorner { TOPLEFT, TOPRIGHT, BOTTOMLEFT, BOTTOMRIGHT };
-Rectangle expandRectangleByAmount(Rectangle const& rect, float amount) {
+enum RectangleSide { TOP, BOTTOM, LEFT, RIGHT };
+enum RectangleVertex { TOPLEFT, TOPRIGHT, BOTTOMLEFT, BOTTOMRIGHT };
+Rectangle RectangleExpandByAmount(Rectangle const& rect, float amount) {
     return Rectangle{rect.x-amount, rect.y-amount, rect.width+2*amount, rect.height+2*amount};
 }
-Vector2 getRectangleCoord(Rectangle const& rect, RectangleCorner desiredCorner) {
-    if (desiredCorner == TOPLEFT)
+Vector2 RectangleGetVertexCoord(Rectangle const& rect, RectangleVertex desiredVertex) {
+    if (desiredVertex == TOPLEFT)
         return Vector2{rect.x, rect.y};
-    else if (desiredCorner == TOPRIGHT)
+    else if (desiredVertex == TOPRIGHT)
         return Vector2{rect.x+rect.width, rect.y};
-    else if (desiredCorner == BOTTOMLEFT)
+    else if (desiredVertex == BOTTOMLEFT)
         return Vector2{rect.x, rect.y+rect.height};
     else
         return Vector2{rect.x+rect.width, rect.y+rect.height};
@@ -42,10 +43,10 @@ void pong::Ball::updateBall(float frameTime, PongModel& gameModel) {
 
     Vector2 scaledMovementVect = Vector2Scale(directionVect, frameTime*speed);
 
-    Rectangle P1PaddleCollisionZone = expandRectangleByAmount(gameModel.P1Paddle.getCollisionBox(), radius);
-    Rectangle P2PaddleCollisionZone = expandRectangleByAmount(gameModel.P2Paddle.getCollisionBox(), radius);
-    Rectangle TopWallCollisionZone = expandRectangleByAmount(gameModel.TopWall.getCollisionBox(), radius);
-    Rectangle BottomWallCollisionZone = expandRectangleByAmount(gameModel.BottomWall.getCollisionBox(), radius);
+    Rectangle P1PaddleCollisionZone = RectangleExpandByAmount(gameModel.P1Paddle.getCollisionBox(), radius);
+    Rectangle P2PaddleCollisionZone = RectangleExpandByAmount(gameModel.P2Paddle.getCollisionBox(), radius);
+    Rectangle TopWallCollisionZone = RectangleExpandByAmount(gameModel.TopWall.getCollisionBox(), radius);
+    Rectangle BottomWallCollisionZone = RectangleExpandByAmount(gameModel.BottomWall.getCollisionBox(), radius);
 
     Vector2 targetCoord = Vector2Add(xyPosition, scaledMovementVect);
     float unusedFrametimeRatio = 0;
