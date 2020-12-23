@@ -57,6 +57,7 @@ namespace pong {
         concept::GameWorld* worldInfo;
         Wall TopWall, BottomWall;
         Paddle P1Paddle, P2Paddle;
+        int P1Score, P2Score;
         Ball PongBall;
         bool canBallMove;
         int topBottomWallThickness;

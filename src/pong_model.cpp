@@ -33,6 +33,8 @@ pong::PongModel::PongModel(concept::GameWorld* gw) {
     topBottomWallThickness = 10;
     MaxPaddleYPosition = 0 + topBottomWallThickness;
     MinPaddleYPosition = gw->height - topBottomWallThickness;
+    P1Score = 0;
+    P2Score = 0;
     
     paddleWidth = 20;
     paddleHeight = 60;
