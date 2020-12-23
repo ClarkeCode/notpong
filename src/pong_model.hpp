@@ -74,7 +74,6 @@ namespace pong {
 
         Ball PongBall;
         bool canBallMove;
-        int topBottomWallThickness;
         float paddleWidth, paddleHeight, paddleSpeed;
         float MaxPaddleYPosition, MinPaddleYPosition;
 

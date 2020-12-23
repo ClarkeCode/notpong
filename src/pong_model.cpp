@@ -39,7 +39,7 @@ void pong::ScoreBoard::drawObject() {
 pong::PongModel::PongModel(concept::GameWorld* gw) {
     worldInfo = gw;
     canBallMove = false;
-    topBottomWallThickness = 10;
+    int topBottomWallThickness = 10;
     MaxPaddleYPosition = 0 + topBottomWallThickness;
     MinPaddleYPosition = gw->height - topBottomWallThickness;
     P1Score = 0;
