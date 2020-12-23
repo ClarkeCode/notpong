@@ -52,12 +52,26 @@ namespace pong {
         void updateBall(float frameTime, PongModel& gameModel);
     };
 
+    class ScoreBoard: public concept::DrawableObject {
+        PongModel* model_ptr;
+        Rectangle P1ScoreDisplayZone, P2ScoreDisplayZone;
+        float fontSize;
+
+        public:
+        ScoreBoard() : model_ptr(nullptr), P1ScoreDisplayZone(Rectangle{0}), P2ScoreDisplayZone(Rectangle{0}), fontSize(0) {}
+        ScoreBoard(PongModel* model_p, Rectangle P1Zone, Rectangle P2Zone, float fontSize) :
+            model_ptr(model_p), P1ScoreDisplayZone(P1Zone), P2ScoreDisplayZone(P2Zone), fontSize(fontSize) {}
+        virtual void drawObject();
+    };
+
     class PongModel: public concept::DrawableObject {
         public:
         concept::GameWorld* worldInfo;
         Wall TopWall, BottomWall;
         Paddle P1Paddle, P2Paddle;
         int P1Score, P2Score;
+        ScoreBoard GameScore;
+
         Ball PongBall;
         bool canBallMove;
         int topBottomWallThickness;

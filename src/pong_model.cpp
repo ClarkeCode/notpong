@@ -1,6 +1,9 @@
 #include "pong_model.hpp"
 #include "raylib.h"
+#include "raylib_extensions.hpp"
 #include "raymath.h"
+
+using namespace extensions;
 
 void pong::Paddle::drawObject() {
     int rectCornerX = (int) (xpos - width/2.0);
@@ -27,6 +30,12 @@ Rectangle pong::Paddle::getCollisionBox() const {
     return Rectangle{xpos-width/2.0f, ypos-height/2.0f, width, height};
 }
 
+void pong::ScoreBoard::drawObject() {
+    Font font = GetFontDefault();
+    DrawTextRec(font, TextFormat("%d", model_ptr->P1Score), P1ScoreDisplayZone, fontSize, 0, 0, BLACK);
+    DrawTextRec(font, TextFormat("%d", model_ptr->P2Score), P2ScoreDisplayZone, fontSize, 0, 0, BLACK);
+}
+
 pong::PongModel::PongModel(concept::GameWorld* gw) {
     worldInfo = gw;
     canBallMove = false;
@@ -46,9 +55,14 @@ pong::PongModel::PongModel(concept::GameWorld* gw) {
     BottomWall = Wall(Rectangle{0, gw->height-topBottomWallThickness, gw->width, (float)topBottomWallThickness});
 
     PongBall = Ball(gw->width/2.0, gw->height/2.0, 10, 150, PI/4);
+
+    float fontSize = 50;
+    GameScore = ScoreBoard(this, RectangleCentreOnCoord(Vector2{worldInfo->width/4.0f, worldInfo->height/2.0f}, fontSize, fontSize),
+        RectangleCentreOnCoord(Vector2{3.0f*worldInfo->width/4.0f, worldInfo->height/2.0f}, fontSize, fontSize), fontSize);
 }
 
 void pong::PongModel::drawObject() {
+    GameScore.drawObject();
     P1Paddle.drawObject();
     P2Paddle.drawObject();
     TopWall.drawObject();
