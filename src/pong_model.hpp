@@ -19,6 +19,15 @@ namespace pong {
         virtual inline Rectangle getCollisionBox() const { return rect; }
     };
 
+    class ScoreZone: public concept::CollidableRectangle {
+        Rectangle rect;
+        public:
+        ScoreZone(Rectangle rect) : rect(rect) {};
+        ScoreZone() : ScoreZone(Rectangle{0}) {}
+
+        virtual inline Rectangle getCollisionBox() const { return rect; }
+    };
+
     class Paddle: public concept::DrawableObject, public concept::GeometryColours, public concept::CollidableRectangle {
         public:
         float xpos, ypos;
@@ -70,6 +79,7 @@ namespace pong {
         Wall TopWall, BottomWall;
         Paddle P1Paddle, P2Paddle;
         int P1Score, P2Score;
+        ScoreZone P1ScoreZone, P2ScoreZone;
         ScoreBoard GameScore;
 
         Ball PongBall;

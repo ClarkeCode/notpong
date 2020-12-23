@@ -59,6 +59,9 @@ pong::PongModel::PongModel(concept::GameWorld* gw) {
     float fontSize = 50;
     GameScore = ScoreBoard(this, RectangleCentreOnCoord(Vector2{worldInfo->width/4.0f, worldInfo->height/2.0f}, fontSize, fontSize),
         RectangleCentreOnCoord(Vector2{3.0f*worldInfo->width/4.0f, worldInfo->height/2.0f}, fontSize, fontSize), fontSize);
+
+    P1ScoreZone = ScoreZone(Rectangle{0, 0, PongBall.radius, worldInfo->height});
+    P2ScoreZone = ScoreZone(Rectangle{worldInfo->width - PongBall.radius, 0, PongBall.radius, worldInfo->height});
 }
 
 void pong::PongModel::drawObject() {
