@@ -13,6 +13,7 @@ namespace extensions {
     inline Rectangle RectangleCentreOnCoord(Vector2 const& coord, float width, float height) {
         return Rectangle{coord.x-width/2.0f, coord.y-height/2.0f, width, height};
     }
+    inline Vector2 RectangleGetCentre(Rectangle const& rect) { return Vector2{rect.x+rect.width/2.0f, rect.y+rect.height/2.0f}; }
     inline Rectangle RectangleCentreOnCoord(Vector2 const& coord, Rectangle const& rect) {
         return Rectangle{coord.x-rect.width/2.0f, coord.y-rect.height/2.0f, rect.width, rect.height};
     }
