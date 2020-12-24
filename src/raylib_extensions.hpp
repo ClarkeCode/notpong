@@ -8,6 +8,8 @@ namespace extensions {
     enum RectangleSide { TOP, BOTTOM, LEFT, RIGHT };
     enum RectangleVertex { TOPLEFT, TOPRIGHT, BOTTOMLEFT, BOTTOMRIGHT };
 
+    inline Rectangle RectangleZero() { return Rectangle{0}; }
+    inline Rectangle RectangleOne() { return Rectangle{1, 1, 1, 1}; }
     inline Rectangle RectangleCentreOnCoord(Vector2 const& coord, float width, float height) {
         return Rectangle{coord.x-width/2.0f, coord.y-height/2.0f, width, height};
     }
