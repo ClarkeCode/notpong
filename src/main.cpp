@@ -51,7 +51,7 @@ void updateGameState(pong::PongModel& model) {
     if (IsKeyPressed(KEY_R)) {
         if (model.canBallMove) {
             model.PongBall.xyPosition = Vector2{model.worldInfo->width/2.0f, model.worldInfo->height/2.0f};
-            model.PongBall.setDirection(DEG2RAD * GetRandomValue(0, 360));
+            model.PongBall.setDirection();
         }
         model.canBallMove = true;
     }

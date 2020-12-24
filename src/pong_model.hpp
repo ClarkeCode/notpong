@@ -55,6 +55,7 @@ namespace pong {
 
         void setDirection(Vector2& directionVector);
         void setDirection(float radianAngle);
+        void setDirection();
 
         virtual void drawObject();
         void updateBall(float frameTime, PongModel& gameModel);

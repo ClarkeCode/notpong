@@ -89,6 +89,20 @@ void pong::Ball::updateBall(float frameTime, PongModel& gameModel) {
         updateBall((1-unusedFrametimeRatio)*frameTime, gameModel);
     }
 
+    //Scoring
+    if (CheckCollisionCircleRec(xyPosition, radius, gameModel.P1ScoreZone.getCollisionBox())) {
+        gameModel.P2Score++;
+        gameModel.canBallMove = false;
+        xyPosition = RectangleGetCentre(Rectangle{0,0,gameModel.worldInfo->width, gameModel.worldInfo->height});
+        setDirection();
+    }
+    else if (CheckCollisionCircleRec(xyPosition, radius, gameModel.P2ScoreZone.getCollisionBox())) {
+        gameModel.P1Score++;
+        gameModel.canBallMove = false;
+        xyPosition = RectangleGetCentre(Rectangle{0,0,gameModel.worldInfo->width, gameModel.worldInfo->height});
+        setDirection();
+    }
+
     else {
         xyPosition = Vector2Add(xyPosition, scaledMovementVect);
     }
@@ -99,3 +113,4 @@ void pong::Ball::setDirection(float radianAngle) {
     directionVect.x = sinf(radianAngle);
     directionVect.y = cosf(radianAngle);
 }
+void pong::Ball::setDirection() { setDirection(DEG2RAD * GetRandomValue(0, 360)); }
