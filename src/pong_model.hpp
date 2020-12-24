@@ -1,47 +1,46 @@
 #ifndef GAME_MODEL_PONG
 #define GAME_MODEL_PONG
 #include "raylib.h"
+#include "raymath.h"
+#include "raylib_extensions.hpp"
 #include "game_concepts.hpp"
 
 namespace pong {
     class PongModel;
 
     class Wall: public concept::DrawableObject, public concept::GeometryColours, public concept::CollidableRectangle {
-        Rectangle rect;
         public:
-        Wall(Rectangle rect) : concept::GeometryColours(GRAY, DARKGRAY), rect(rect) {}
-        Wall() : Wall(Rectangle{0,0,0,0}) {}
+        Wall(Rectangle rect) : concept::GeometryColours(GRAY, DARKGRAY), concept::CollidableRectangle(rect) {}
+        Wall() : Wall(extensions::RectangleZero()) {}
         
         virtual inline void drawObject() {
             DrawRectangleRec(rect, GRAY);
             DrawRectangleLinesEx(rect, 1, DARKGRAY);
         }
-        virtual inline Rectangle getCollisionBox() const { return rect; }
     };
 
     class ScoreZone: public concept::CollidableRectangle {
-        Rectangle rect;
         public:
-        ScoreZone(Rectangle rect) : rect(rect) {};
-        ScoreZone() : ScoreZone(Rectangle{0}) {}
+        ScoreZone(Rectangle rect) : concept::CollidableRectangle(rect) {};
+        ScoreZone() : ScoreZone(extensions::RectangleZero()) {}
 
         virtual inline Rectangle getCollisionBox() const { return rect; }
     };
 
     class Paddle: public concept::DrawableObject, public concept::GeometryColours, public concept::CollidableRectangle {
         public:
-        float xpos, ypos;
-        float width, height;
+        //xyPosition corresponds to the centre of the paddle
+        Vector2 xyPosition;
         float speed;
         
-        Paddle(float x, float y, float w, float h, float s) : 
-            GeometryColours(Color{255,0,0,255}, Color{255,255,0,255}), 
-            xpos(x), ypos(y), width(w), height(h), speed(s) {}
-        Paddle() : Paddle(0, 0, 0, 0, 0) {}
+        Paddle(Vector2 position, float width, float height, float speed) :
+            GeometryColours(Color{255,0,0,255}, Color{255,255,0,255}),
+            CollidableRectangle(Rectangle{position.x-width/2.0f, position.y-height/2.0f, width, height}),
+            xyPosition(position), speed(speed) {}
+        Paddle() : Paddle(Vector2Zero(), 0, 0, 0) {}
 
         virtual void drawObject();
         void updatePaddle(float verticalDelta, float maxYPos, float minYPos);
-        virtual Rectangle getCollisionBox() const;
     };
 
     class Ball: public concept::DrawableObject, public concept::GeometryColours {

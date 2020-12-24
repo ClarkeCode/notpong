@@ -1,6 +1,7 @@
 #ifndef GAME_CONCEPTS
 #define GAME_CONCEPTS
 #include "raylib.h"
+#include "raylib_extensions.hpp"
 
 namespace concept {
     class GameWorld {
@@ -16,8 +17,14 @@ namespace concept {
     };
 
     class CollidableRectangle {
+        protected:
+        Rectangle rect;
+
         public:
-        virtual Rectangle getCollisionBox() const = 0;
+        CollidableRectangle(Rectangle rect) : rect(rect) {}
+        CollidableRectangle() : CollidableRectangle(extensions::RectangleZero()) {}
+        
+        virtual inline Rectangle getCollisionBox() const { return rect; }
         virtual ~CollidableRectangle() {}
     };
 

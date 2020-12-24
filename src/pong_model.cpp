@@ -6,28 +6,26 @@
 using namespace extensions;
 
 void pong::Paddle::drawObject() {
-    int rectCornerX = (int) (xpos - width/2.0);
-    int rectCornerY = (int) (ypos - height/2.0);
-    DrawRectangle(rectCornerX, rectCornerY, width, height, fillColour);
-    DrawRectangleLinesEx(Rectangle{(float)rectCornerX, (float)rectCornerY, width, height}, 1, lineColour);
+    // int rectCornerX = (int) (xpos - rect.width/2.0);
+    // int rectCornerY = (int) (ypos - rect.height/2.0);
+    // DrawRectangle(rectCornerX, rectCornerY, width, height, fillColour);
+    DrawRectangleRec(rect, fillColour);
+    DrawRectangleLinesEx(rect, 1, lineColour);
 }
 
 void pong::Paddle::updatePaddle(float verticalDelta, float maxYPos, float minYPos) {
-    float modifiedMinYPos = minYPos + height/2.0;
-    float modifiedMaxYPos = maxYPos - height/2.0;
+    float modifiedMinYPos = minYPos + rect.height/2.0;
+    float modifiedMaxYPos = maxYPos - rect.height/2.0;
     
     //Move the paddle vertically
-    ypos += verticalDelta;
+    xyPosition.y += verticalDelta;
+    rect.y += verticalDelta;
 
     //Ensure paddle doesn't leave boundaries
-    if (ypos < modifiedMinYPos)
-        ypos = modifiedMinYPos;
-    if (ypos > modifiedMaxYPos)
-        ypos = modifiedMaxYPos;
-}
-
-Rectangle pong::Paddle::getCollisionBox() const {
-    return Rectangle{xpos-width/2.0f, ypos-height/2.0f, width, height};
+    if (xyPosition.y < modifiedMinYPos)
+        xyPosition.y = modifiedMinYPos;
+    if (xyPosition.y > modifiedMaxYPos)
+        xyPosition.y = modifiedMaxYPos;
 }
 
 void pong::ScoreBoard::drawObject() {
@@ -48,8 +46,8 @@ pong::PongModel::PongModel(concept::GameWorld* gw) {
     paddleWidth = 20;
     paddleHeight = 60;
     paddleSpeed = 120;
-    P1Paddle = Paddle(0 + paddleWidth/2.0, gw->height/2.0, paddleWidth, paddleHeight, paddleSpeed);
-    P2Paddle = Paddle(gw->width - paddleWidth/2.0, gw->height/2.0, paddleWidth, paddleHeight, paddleSpeed);
+    P1Paddle = Paddle(Vector2{0 + paddleWidth/2.0f, gw->height/2.0f}, paddleWidth, paddleHeight, paddleSpeed);
+    P2Paddle = Paddle(Vector2{gw->width - paddleWidth/2.0f, gw->height/2.0f}, paddleWidth, paddleHeight, paddleSpeed);
 
     TopWall = Wall(Rectangle{0, 0, gw->width, (float)topBottomWallThickness});
     BottomWall = Wall(Rectangle{0, gw->height-topBottomWallThickness, gw->width, (float)topBottomWallThickness});
