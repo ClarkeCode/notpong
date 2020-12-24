@@ -20,6 +20,7 @@
 ********************************************************************************************/
 
 #include "raylib.h"
+#include "raylib_extensions.hpp"
 #include "pong_model.hpp"
 #include <iostream>
 
@@ -64,19 +65,23 @@ void drawGameState(Camera2D& camera, pong::PongModel& model) {
         //----------------------------------------------------------------------------------
         BeginDrawing();
             ClearBackground(RAYWHITE);
+
+            if (!model.canBallMove) {
+                DrawTextRec(GetFontDefault(), "P1: 'W', 'S' to move\nP2 Up, Down to move\n'R' to serve the ball", 
+                    extensions::RectangleCentreOnCoord(Vector2{model.worldInfo->width / 2.0f, model.worldInfo->height * 8.0f / 10.0f},
+                    Rectangle{0,0, 260, 200}), 20, 4, 1, BLACK);
+            }
+            
             BeginMode2D(camera);
 
-                //DrawCube(cubePosition, 2.0f, 2.0f, 2.0f, RED);
-                //DrawCubeWires(cubePosition, 2.0f, 2.0f, 2.0f, MAROON);
                 model.drawObject();
-                DrawGrid(10, 1.0f);
 
             EndMode2D();
 
-            DrawText("This is a raylib example", 10, 40, 20, DARKGRAY);
+            //DrawText("This is a raylib example", 10, 40, 20, DARKGRAY);
             //DrawText(TextFormat("FOV: %f", camera.fovy), 10, 60, 20, DARKGRAY);
             //DrawText(TextFormat("Last key: %d", oldKey), 10, 80, 20, DARKGRAY);
-            DrawFPS(10, 10);
+            //DrawFPS(10, 10);
 
         EndDrawing();
         //----------------------------------------------------------------------------------
