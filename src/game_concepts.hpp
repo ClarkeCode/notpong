@@ -1,3 +1,8 @@
+/*
+    Game Concepts header
+    Version:    1.0
+*/
+
 #ifndef GAME_CONCEPTS
 #define GAME_CONCEPTS
 #include "raylib.h"

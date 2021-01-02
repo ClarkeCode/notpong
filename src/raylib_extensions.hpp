@@ -1,6 +1,9 @@
+/*
+    Raylib Extension header
+    Version:    1.0
+*/
 #ifndef RAYLIB_EXTENSIONS
 #define RAYLIB_EXTENSIONS
-
 #include "raylib.h"
 
 namespace extensions {
@@ -19,6 +22,9 @@ namespace extensions {
     }
     inline Rectangle RectangleExpandByAmount(Rectangle const& rect, float amount) {
         return Rectangle{rect.x-amount, rect.y-amount, rect.width+2*amount, rect.height+2*amount};
+    }
+    inline Rectangle RectangleTranslateByDirection(Rectangle const& rect, Vector2 const& direction) {
+        return Rectangle{rect.x + direction.x, rect.y + direction.y, rect.width, rect.height};
     }
     inline Vector2 RectangleGetVertexCoord(Rectangle const& rect, RectangleVertex const& desiredVertex) {
         if (desiredVertex == TOPLEFT)
